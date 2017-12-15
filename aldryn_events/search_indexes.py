@@ -58,3 +58,9 @@ class EventsIndex(get_index_base()):
                 # TODO: logging
                 pass
         return ' '.join(text_bits)
+    
+    
+    def get_language(self, obj):
+        if hasattr(obj, 'language_code'):
+            return obj.language_code
+        return None
