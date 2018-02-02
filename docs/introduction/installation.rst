@@ -30,7 +30,6 @@ In your project's ``settings.py`` make sure you have all of::
     'aldryn_apphooks_config',
     'aldryn_boilerplates',
     'aldryn_translation_tools',
-    'aldryn_reversion',
     'aldryn_common',
     'aldryn_events',
     'appconf',
@@ -45,13 +44,6 @@ In your project's ``settings.py`` make sure you have all of::
     'standard_form',
 
 listed in ``INSTALLED_APPS``, *after* ``'cms'``.
-
-.. note::
-   If you are using Django 1.6, add ``south`` to  ``INSTALLED_APPS``.
-
-   If you are using Python 2.6 please remove ``django_tablib`` from
-   ``INSTALLED_APPS`` because this package does not supports both
-   Python 2.6 and Django 1.6.
 
 
 Aldryn Boilerplates

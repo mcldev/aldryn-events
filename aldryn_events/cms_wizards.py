@@ -2,8 +2,7 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.db import transaction
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from cms.api import add_plugin
 from cms.utils import permissions
@@ -15,7 +14,6 @@ from cms.wizards.forms import BaseFormMixin
 from djangocms_text_ckeditor.widgets import TextEditorWidget
 from djangocms_text_ckeditor.html import clean_html
 from parler.forms import TranslatableModelForm
-from reversion.revisions import revision_context_manager
 
 from .cms_appconfig import EventsConfig
 from .models import Event
@@ -49,18 +47,15 @@ class CreateEventForm(BaseFormMixin, TranslatableModelForm):
     The ModelForm for the Event wizard. Note that Event has few
     translated fields that we need to access, so, we use TranslatableModelForm
     """
-
-    description = forms.CharField(
+    event_content = forms.CharField(
         label="description", required=False, widget=TextEditorWidget,
-        help_text=_("Optional. If provided, will be added to the main body of "
-                    "the Event.")
+        help_text=_("Optional. If provided, will be added to the main body of the Event.")
     )
 
     class Meta:
         model = Event
         fields = ['title', 'slug', 'short_description', 'location',
-                  'app_config', 'is_published', 'start_date', 'end_date',
-                  'description']
+                  'app_config', 'is_published', 'start_date', 'end_date', 'event_content']
 
     def __init__(self, **kwargs):
         super(CreateEventForm, self).__init__(**kwargs)
@@ -89,24 +84,24 @@ class CreateEventForm(BaseFormMixin, TranslatableModelForm):
 
         # If 'content' field has value, create a TextPlugin with same and add
         # it to the PlaceholderField
-        description = clean_html(
-            self.cleaned_data.get('description', ''), False)
+        event_content = clean_html(
+            self.cleaned_data.get('event_content', ''), False)
 
         try:
             # CMS >= 3.3.x
             content_plugin = get_cms_setting('PAGE_WIZARD_CONTENT_PLUGIN')
         except KeyError:
-            # CMS <= 3.2.x
+            # COMPAT: CMS3.2
             content_plugin = get_cms_setting('WIZARD_CONTENT_PLUGIN')
 
         try:
             # CMS >= 3.3.x
             content_field = get_cms_setting('PAGE_WIZARD_CONTENT_PLUGIN_BODY')
         except KeyError:
-            # CMS <= 3.2.x
+            # COMPAT: CMS3.2
             content_field = get_cms_setting('WIZARD_CONTENT_PLUGIN_BODY')
 
-        if description and permissions.has_plugin_permission(
+        if event_content and permissions.has_plugin_permission(
                 self.user, content_plugin, 'add'):
             # If the event has not been saved, then there will be no
             # Placeholder set-up for this event yet, so, ensure we have saved
@@ -121,19 +116,14 @@ class CreateEventForm(BaseFormMixin, TranslatableModelForm):
                     'placeholder': event.description,
                     'plugin_type': content_plugin,
                     'language': self.language_code,
-                    content_field: description,
+                    content_field: event_content,
                 }
                 add_plugin(**plugin_kwargs)
 
-        with transaction.atomic():
-            with revision_context_manager.create_revision():
-                event.save()
+        event.save()
 
-                if self.user:
-                    revision_context_manager.set_user(self.user)
-                revision_context_manager.set_comment(
-                    ugettext("Initial version."))
         return event
+
 
 event_wizard = EventWizard(
     title=_(u"New Event"),
