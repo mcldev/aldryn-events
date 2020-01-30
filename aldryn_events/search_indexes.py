@@ -12,7 +12,7 @@ from .models import Event
 class EventsIndex(get_index_base()):
     haystack_use_for_indexing = getattr(settings, "ALDRYN_EVENTS_SEARCH", True)
 
-    INDEX_TITLE = True
+    index_title = True
 
     def prepare_pub_date(self, obj):
         return obj.publish_at
