@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
+
 
 import datetime
 from cms import api
 from cms.models import Placeholder
 from cms.utils.i18n import force_language
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.core.cache import cache
 from django.utils.encoding import force_text
 

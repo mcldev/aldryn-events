@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 from django.conf.urls import url
 
 from aldryn_events.views import event_list, event_dates, event_list_archive, event_detail, reset_event_registration

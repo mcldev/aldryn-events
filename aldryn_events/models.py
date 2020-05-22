@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
+
 
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import force_text, python_2_unicode_compatible
@@ -95,7 +95,7 @@ class Event(TranslatedAutoSlugifyMixin,
         ),
         meta={'unique_together': (('language_code', 'slug'),)}
     )
-    app_config = models.ForeignKey(EventsConfig, verbose_name=_('app_config'))
+    app_config = models.ForeignKey(EventsConfig, verbose_name=_('app_config'), on_delete=models.CASCADE)
 
     objects = EventManager()
 
@@ -239,6 +239,7 @@ class EventCoordinator(models.Model):
         verbose_name=_('user'),
         null=True,
         blank=True,
+        on_delete = models.SET_NULL,
     )
 
     def __str__(self):
@@ -284,7 +285,7 @@ class Registration(models.Model):
         max_length=32
     )
 
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event, on_delete = models.CASCADE)
     salutation = models.CharField(
         _('Salutation'), max_length=5, choices=SALUTATIONS,
         default=SALUTATIONS.SALUTATION_FEMALE
@@ -315,7 +316,7 @@ class Registration(models.Model):
 
 
 class BaseEventPlugin(CMSPlugin):
-    app_config = models.ForeignKey(EventsConfig, verbose_name=_('app_config'))
+    app_config = models.ForeignKey(EventsConfig, verbose_name=_('app_config'), on_delete = models.CASCADE)
 
     # Add an app namespace to related_name to avoid field name clashes
     # with any other plugins that have a field with the same name as the
@@ -325,6 +326,7 @@ class BaseEventPlugin(CMSPlugin):
         CMSPlugin,
         related_name='%(app_label)s_%(class)s',
         parent_link=True,
+        on_delete=models.CASCADE
     )
 
     def copy_relations(self, old_instance):

@@ -11,5 +11,4 @@ class Form(forms.BaseForm):
             style = style.strip()
             choices.append((style, style))
         settings['ALDRYN_EVENTS_PLUGIN_STYLES'] = choices
-        settings['INSTALLED_APPS'].append('django_tablib')
         return settings

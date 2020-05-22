@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
+
+
 
 from distutils.version import LooseVersion
 from cms import __version__ as cms_string_version
@@ -33,7 +33,6 @@ HELPER_SETTINGS = {
         'parler',
         'sortedm2m',
         'standard_form',
-        'django_tablib',
         'aldryn_events',
     ],
     'CMS_PERMISSION': True,

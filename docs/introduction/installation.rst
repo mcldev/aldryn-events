@@ -34,7 +34,6 @@ In your project's ``settings.py`` make sure you have all of::
     'aldryn_events',
     'appconf',
     'bootstrap3',
-    'django_tablib',
     'djangocms_text_ckeditor',
     'easy_thumbnails',
     'extended_choices',

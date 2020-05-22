@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
+
 
 from django.conf import settings
 from django.template import RequestContext
@@ -58,8 +58,8 @@ class EventsIndex(get_index_base()):
                 # TODO: logging
                 pass
         return ' '.join(text_bits)
-    
-    
+
+
     def get_language(self, obj):
         if hasattr(obj, 'language_code'):
             return obj.language_code
